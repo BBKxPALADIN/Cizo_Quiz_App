@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quiz_app/theme/color.dart';
 
 class CizoThemes {
   static TextTheme textTheme700 = const TextTheme(
@@ -64,8 +65,9 @@ class CizoThemes {
 
   static ThemeData mainTheme() {
     return ThemeData(
+      backgroundColor: CizoColors.greyColor,
       brightness: Brightness.light,
-      primaryColor: Colors.white,
+      primaryColor: Colors.green,
       textSelectionTheme: const TextSelectionThemeData(
         selectionColor: Color(0xff14C1FA),
       ),
