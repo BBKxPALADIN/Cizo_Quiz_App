@@ -15,6 +15,7 @@ dependencies:
   flutter_bloc: ^7.0.1
   smooth_page_indicator: ^0.2.3
   toggle_bar: ^1.0.0
+  image_picker: ^0.8.4
 
 
   cupertino_icons: ^1.0.2

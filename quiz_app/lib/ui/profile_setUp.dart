@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:quiz_app/theme/color.dart';
 import 'package:quiz_app/theme/theme.dart';
 import 'package:quiz_app/ui/signIn_signUp.dart';
+import 'dart:io';
 
 class ProfileSetUp extends StatefulWidget {
   static const routeName = '/profileSetUp';
@@ -14,6 +16,9 @@ class ProfileSetUp extends StatefulWidget {
 }
 
 class _ProfileSetUpState extends State<ProfileSetUp> {
+  PickedFile _imageFile;
+  final _picker = ImagePicker();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,7 +55,6 @@ class _ProfileSetUpState extends State<ProfileSetUp> {
                     children: [
                       buildTitle(),
                       buildPicture(),
-                      buildAddPicture(),
                       buildRegion(),
                       buildConfirm(),
                     ],
@@ -58,11 +62,7 @@ class _ProfileSetUpState extends State<ProfileSetUp> {
                 ),
               ),
             ),
-            Positioned(
-              top: MediaQuery.of(context).size.height * 0.02,
-              left: MediaQuery.of(context).size.width * 0.04,
-              child: Image.asset('assets/icons/rocket.png'),
-            ),
+            Image.asset('assets/icons/rocket.png'),
           ],
         ),
       ),
@@ -89,54 +89,77 @@ class _ProfileSetUpState extends State<ProfileSetUp> {
   }
 
   Widget buildPicture() {
-    return Container(
-      width: 140,
-      height: 140,
-      margin: EdgeInsets.only(
-        top: MediaQuery.of(context).size.height * 0.06,
-        bottom: MediaQuery.of(context).size.height * 0.01,
-      ),
-      decoration: BoxDecoration(
-        color: CizoColors.primaryColor.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(40),
-      ),
-      child: Icon(
-        Icons.photo_camera_outlined,
-        color: CizoColors.primaryColor,
-        size: 34,
-      ),
+    return Column(
+      children: [
+        Container(
+          width: 140,
+          height: 140,
+          margin: EdgeInsets.only(
+            top: MediaQuery.of(context).size.height * 0.06,
+            bottom: MediaQuery.of(context).size.height * 0.01,
+          ),
+          decoration: BoxDecoration(
+            color: CizoColors.primaryColor.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(40),
+          ),
+          child: _imageFile == null
+              ? SvgPicture.asset(
+                  'assets/icons/camera.svg',
+                  fit: BoxFit.cover,
+                )
+              : Image(
+                  image: FileImage(
+                    File(_imageFile.path),
+                  ),
+                  fit: BoxFit.cover,
+                ),
+        ),
+        TextButton(
+          onPressed: () async {
+            await showDialog(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                title: Text("Choose a source to pick an image!"),
+                actions: [
+                  // ignore: deprecated_member_use
+                  FlatButton.icon(
+                    onPressed: () {
+                      takePhoto(ImageSource.gallery);
+                      Navigator.of(context).pop();
+                    },
+                    icon: Icon(Icons.camera),
+                    label: Text('From Gallery'),
+                  ),
+                  // ignore: deprecated_member_use
+                  FlatButton.icon(
+                    onPressed: () {
+                      takePhoto(ImageSource.camera);
+                      Navigator.of(context).pop();
+                    },
+                    icon: Icon(Icons.camera),
+                    label: Text('From Camera'),
+                  ),
+                ],
+              ),
+            );
+          },
+          child: Text(
+            'Add Profile Picture',
+            style: CizoThemes.textTheme600.headline3,
+          ),
+        ),
+      ],
     );
   }
 
-  Widget buildAddPicture() {
-    return TextButton(
-      onPressed: () async {
-        await showDialog(
-          context: context,
-          builder: (ctx) => AlertDialog(
-            title: Text("Choose a source to pick an image!"),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(ctx).pop();
-                },
-                child: Text("From Gallery"),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(ctx).pop();
-                },
-                child: Text("From Camera"),
-              ),
-            ],
-          ),
-        );
-      },
-      child: Text(
-        'Add Profile Picture',
-        style: CizoThemes.textTheme600.headline3,
-      ),
+  void takePhoto(ImageSource source) async {
+    // ignore: deprecated_member_use
+    final pickedFile = await _picker.getImage(
+      source: source,
     );
+    setState(() {
+      _imageFile = pickedFile;
+    });
   }
 
   Widget buildRegion() {
