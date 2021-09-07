@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:quiz_app/models/signIn.dart';
 import 'package:quiz_app/theme/color.dart';
 import 'package:quiz_app/theme/theme.dart';
 import 'package:quiz_app/ui/signIn_signUp.dart';
@@ -18,6 +19,7 @@ class ProfileSetUp extends StatefulWidget {
 class _ProfileSetUpState extends State<ProfileSetUp> {
   PickedFile _imageFile;
   final _picker = ImagePicker();
+  var isPicked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +64,11 @@ class _ProfileSetUpState extends State<ProfileSetUp> {
                 ),
               ),
             ),
-            Image.asset('assets/icons/rocket.png'),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.42,
+              height: MediaQuery.of(context).size.height * 0.42,
+              child: Image.asset('assets/icons/rocket.png'),
+            ),
           ],
         ),
       ),
@@ -103,9 +109,10 @@ class _ProfileSetUpState extends State<ProfileSetUp> {
             borderRadius: BorderRadius.circular(40),
           ),
           child: _imageFile == null
-              ? SvgPicture.asset(
-                  'assets/icons/camera.svg',
-                  fit: BoxFit.cover,
+              ? Icon(
+                  Icons.photo_camera_outlined,
+                  size: 33,
+                  color: CizoColors.primaryColor,
                 )
               : Image(
                   image: FileImage(
@@ -142,10 +149,15 @@ class _ProfileSetUpState extends State<ProfileSetUp> {
                 ],
               ),
             );
+            isPicked = true;
+            setState(() {});
           },
           child: Text(
-            'Add Profile Picture',
-            style: CizoThemes.textTheme600.headline3,
+            isPicked ? 'Change Profile Picture' : 'Add Profile Picture',
+            style: isPicked
+                ? CizoThemes.textTheme600.headline3
+                    .copyWith(color: CizoColors.greyColor)
+                : CizoThemes.textTheme600.headline3,
           ),
         ),
       ],
@@ -231,7 +243,9 @@ class _ProfileSetUpState extends State<ProfileSetUp> {
 
   Widget buildConfirm() {
     return MaterialButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.of(context).pushReplacementNamed(SignIn_SignUp.routeName);
+        },
         padding: const EdgeInsets.symmetric(vertical: 20),
         child: Text(
           'Confirm',

@@ -76,7 +76,7 @@ class _SignIn_SignUpState extends State<SignIn_SignUp> {
             ),
           ),
           Positioned(
-            bottom: MediaQuery.of(context).size.height * 0.67,
+            bottom: MediaQuery.of(context).size.height * 0.65,
             left: MediaQuery.of(context).size.width * 0.18,
             child: Image.asset('assets/icons/handshake.png'),
           ),
